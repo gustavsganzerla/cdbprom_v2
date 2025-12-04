@@ -1,0 +1,137 @@
+{% extends 'base.html'%}
+
+{% block title %}About{% endblock %}
+
+{% block content%}
+
+<style>
+    .about-tab {
+        padding: 20px;
+        font-family: sans-serif;
+    }
+    
+    .about-tab h2 {
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    }
+    
+    .about-section {
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .about-section h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    
+    .about-section p {
+        line-height: 1.5;
+    }
+    
+    .about-section .btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 14px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.9em;
+    }
+    
+    .about-section .btn:hover {
+        background-color: #0056b3;
+    }
+    .license-text {
+        margin-top: 10px;
+        padding: 15px;
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+    
+    .toggle-license-btn {
+        margin-top: 10px;
+    }
+    
+</style>    
+
+
+<div class="about-tab">
+    <div class="about-tab">
+        <h2>About <strong>CDBProm</strong></h2>
+    
+        <!-- Funding Section -->
+        <div class="about-section">
+            <h3>Funding</h3>
+            <p>
+                This project has been supported by <strong>[Your Funding Agency]</strong> 
+                under grant <strong>[Grant Number]</strong>.  
+                The funding enables development and maintenance of this tool for research purposes.
+            </p>
+        </div>
+        <!-- Usage Section -->
+        <div class="about-section">
+            <h3>Usage</h3>
+            <p>
+                This tool is intended for <strong>research purposes only</strong>.  
+                Commercial use or redistribution without explicit permission from the authors is not permitted.
+            </p>
+        </div>
+              <!-- License Section -->
+              <div class="about-section">
+                <h3>License</h3>
+                <p>
+                    This tool is released under the <strong>MIT License</strong>.
+                </p>
+                <button class="btn toggle-license-btn">View License</button>
+        
+                <div class="license-text" style="display:none;">
+                    <pre>
+                        MIT License
+                        
+                        Copyright (c) 2025 Gustavo Sganzerla Martinez et al.
+                        
+                        Permission is hereby granted, free of charge, to any person obtaining a copy
+                        of this software and associated documentation files (the "Software"), to deal
+                        in the Software without restriction, including without limitation the rights
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        copies of the Software, and to permit persons to whom the Software is
+                        furnished to do so, subject to the following conditions:
+                        
+                        1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                        
+                        2. The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or the use or other dealings in the Software.
+                                </pre>
+                </div>
+            </div>
+    </div>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtns = document.querySelectorAll('.toggle-license-btn');
+    
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const licenseDiv = btn.nextElementSibling;
+                if (licenseDiv.style.display === 'none') {
+                    licenseDiv.style.display = 'block';
+                    btn.textContent = 'Hide License';
+                } else {
+                    licenseDiv.style.display = 'none';
+                    btn.textContent = 'View License';
+                }
+            });
+        });
+    });
+</script>
+
+
+{%endblock%}

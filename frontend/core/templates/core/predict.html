@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Predict{% endblock %}
+
+{% block content %}
+<h1>Predict</h1>
+
+<div class='form-block'>
+    <form method="post" id="new-form">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">
+            {{ field }}
+        {% endfor %}
+        <button type="submit">Submit</button>
+        <button type="button" id="reset-form">Reset</button>
+    </form>
+</div>
+
+    <div id="download-container"></div>
+    <div id="results-container" style="display: none;"></div>
+    
+
+    <script src="{% static 'js/predict.js' %}"></script>
+    <script src="{% static 'js/reset_predict_elements.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django / Flask
+*.log
+*.pot
+media/
+staticfiles/
+instance/
+
+# Environment
+.env
+
+# Docker
+docker-compose.override.yml
+**/docker-compose.override.yml
+**/.env
+
+# Docker volumes (local only)
+pgdata/
+volumes/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+

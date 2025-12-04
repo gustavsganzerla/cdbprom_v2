@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Query{% endblock %}
+{% block content %}
+
+
+
+<!-- Form Section -->
+<h1>Search at CDBProm</h1>
+<div class="form-container">
+  <form id="query-form">
+    <div class="form-group">
+      <label for="organism">Organism Name:</label>
+      <div class="autocomplete-wrapper">
+        <input type="text" id="organism" name="organism_name" placeholder="Enter organism name">
+        <ul id="autocomplete-list" class="autocomplete-items"></ul>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ncbi">NCBI ID:</label>
+      <input type="text" id="ncbi" name="ncbi_id" placeholder="Enter NCBI ID">
+    </div>
+
+    <div class="form-group">
+      <label for="annotation">Annotation:</label>
+      <input type="text" id="annotation" name="annotation" placeholder="Enter annotation">
+    </div>
+
+    <button type="submit" class="btn">Search</button>
+    <button type="reset" id="reset-form" class="btn secondary">Reset</button>
+  </form>
+</div>
+
+<!-- Results Section -->
+<div id="results" class="results-section"></div>
+<p id="results-count"></p>
+<div id="download-container"></div>
+
+
+<!-- Table Section -->
+<div class="table-container">
+  <table id="results-table" class="table-custom" style="display: none;">
+    <thead>
+      <tr>
+        <th>NCBI ID</th>
+        <th>Organism Name</th>
+        <th>Promoter Sequence</th>
+        <th>Annotation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- this will be filled dynamically by the js -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div id="pagination"></div>
+
+<script src="{% static 'js/autocomplete_organism_name.js' %}"></script>
+<script src="{% static 'js/query.js' %}"></script>
+<script src="{% static 'js/reset.js' %}"></script>
+<script src="{% static 'js/download_query.js' %}"></script>
+  
+  
+
+  
+
+
+
+{% endblock %}

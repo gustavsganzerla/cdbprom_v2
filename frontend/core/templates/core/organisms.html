@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Oganisms{% endblock %}
+{% block content %}
+
+<h1>Supported Organisms</h1>
+
+<!-- This div can stay empty or just for a dedicated download button -->
+<div id="download-container"></div>
+
+<div class="table-container">
+  <table id="results-table" class="table-custom">
+    <thead>
+        <tr>
+            <th>Organism Name</th>
+            <th>Number of Promoters</th>
+            <th>Actions</th>
+          </tr>
+    </thead>
+    <tbody>
+      {% for item in organisms %}
+      <tr>
+        <td>{{ item.organism_name }}</td>
+        <td>{{ item.count }}</td>
+        <td>
+          <i class="fa-solid fa-eye view-icon" data-organism="{{ item.organism_name }}"></i>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div id="pagination"></div>
+</div>
+
+<script src="{% static 'js/query.js' %}"></script>
+<script src="{% static 'js/download_query.js' %}"></script>
+
+{%endblock%}

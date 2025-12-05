@@ -34,7 +34,7 @@ def predict_sequence(seq):
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:8000"])
 
 
 model_dir = 'ft_model_files'
@@ -49,6 +49,7 @@ model.eval()
 
 ###API endpoint
 @app.route("/predict", methods=["POST"])
+@app.route("/predict/", methods=["POST"])
 def predict():
     data = request.get_json()
     sequences = data['sequences']

@@ -14,6 +14,7 @@ document.getElementById("new-form").addEventListener("submit", async function(e)
     const sequences = parseFasta(fastaContent);
 
     console.log("Sending to Flask API:", sequences);
+    console.log(CONFIG.API_URL);
 
     try {
         const response = await fetch(CONFIG.API_URL, {

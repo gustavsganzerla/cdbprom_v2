@@ -34,3 +34,5 @@ volumes/
 Thumbs.db
 
 
+#safe tensors
+*.safetensors

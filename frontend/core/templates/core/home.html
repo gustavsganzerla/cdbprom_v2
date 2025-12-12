@@ -3,7 +3,82 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Home Page</h1>
+
+<h1>Welcome to CDBProm v2.0</h1>
+<main class="ml-64 p-4 bg-light min-vh-100">
+    <div class="mb-4">
+        
+        <p class="lead">
+            CDBProm is a platform that contains millions of bacterial promoters and a transformer-based predictive framework. You can query the database for promoters of specific bacterial species and run our prediction tool in your own data.
+        </p>
+    </div>
+
+    <!-- Functionality Cards -->
+    <div class="row mb-4">
+        <!-- Query DB -->
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Query Database</h5>
+                    <p class="card-text flex-grow-1">
+                        Search and explore promoter sequences by species or functional annotation.
+                    </p>
+                    <a href="{% url 'query' %}" class="btn btn-primary mt-3">Query CDBProm</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictive Framework -->
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Run Predictive Analysis</h5>
+                    <p class="card-text flex-grow-1">
+                        Submit sequences to our predictive framework to analyze promoter activity and classification.
+                    </p>
+                    <a href="{% url 'predict' %}" class="btn btn-success mt-3">Run Prediction</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <!-- Total Promoters -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">123</h3>
+                    <p class="card-text">Promoter Sequences</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Species -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">123</h3>
+                    <p class="card-text">Bacterial Species</p>
+                </div>
+            </div>
+        </div>
+        <!-- Total Genomes -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">123</h3>
+                    <p class="card-text">Genomes</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</main>
+
+
+
 
 {% endblock %}
 

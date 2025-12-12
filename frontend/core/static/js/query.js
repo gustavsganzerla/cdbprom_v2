@@ -105,11 +105,21 @@ function fetchData(page = 1, organismOverride = null) {
       const tbody = table.querySelector('tbody');
       const thead = table.querySelector('thead');
 
-      // total records
+
+      // query
+      const resultsQuery = document.getElementById('results-query');
+      if (resultsQuery) {
+        if (organism){
+          resultsQuery.innerHTML = `Organism: <strong>${organism}</strong>`;
+        }
+        
+      }
+      // total records for the query
       const resultsCount = document.getElementById('results-count');
       if (resultsCount) {
         resultsCount.innerHTML = `Total records: <strong>${data.count}</strong>`;
       }
+      
 
       //downloa button
       const downloadContainer = document.getElementById('download-container');

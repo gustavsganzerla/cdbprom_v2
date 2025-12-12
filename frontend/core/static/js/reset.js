@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form1 = document.getElementById("query-form");
   const resultsDiv = document.getElementById("results");
   const resultsTable = document.getElementById("results-table");
+  const resultsQuery = document.getElementById("results-query");
   const resultsCount = document.getElementById("results-count");
   const pagination = document.getElementById("pagination");
   const downloadContainer = document.getElementById('download-container');
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // clear results
     resultsDiv.innerHTML = "";
+    resultsQuery.innerHTML = "";
     resultsCount.innerHTML = "";
     pagination.innerHTML = "";
     downloadContainer.innerHTML = "";

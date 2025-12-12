@@ -49,9 +49,9 @@ def about(request):
 def organisms(request):
     organisms = (
         PromoterModel.objects
-        .values('organism_name')       # group by organism_name
-        .annotate(count=Count('id'))   # count how many per organism
-        .order_by('organism_name')     # optional: order alphabetically
+        .values('organism_name')      
+        .annotate(count=Count('id'))   
+        .order_by('organism_name')  
     )
 
     return render(request, 'core/organisms.html', {'organisms': organisms})

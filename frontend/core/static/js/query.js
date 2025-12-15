@@ -109,10 +109,17 @@ function fetchData(page = 1, organismOverride = null) {
       // query
       const resultsQuery = document.getElementById('results-query');
       if (resultsQuery) {
+        let content = [];
         if (organism){
-          resultsQuery.innerHTML = `Organism: <strong>${organism}</strong>`;
+          content.push(`Organism: <strong>${organism}</strong>`);
         }
-        
+        if (annotation){
+          content.push(`Annotation: <strong>${annotation}</strong>`);
+        }
+        if (ncbiID){
+          content.push(`NCBI ID: <strong>${ncbiID}</strong>`);
+        }
+        resultsQuery.innerHTML = content.join('<br>');
       }
       // total records for the query
       const resultsCount = document.getElementById('results-count');

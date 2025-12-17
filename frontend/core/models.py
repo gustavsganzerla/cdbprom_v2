@@ -8,7 +8,7 @@ class PromoterModel(models.Model):
     end_position = models.IntegerField()
     prediction_score = models.FloatField()
     sequence = models.CharField(max_length=200)
-    annotation = models.CharField(max_length=1000)
+    annotation = models.CharField(max_length=3000)
 
     def __str__(self):
         return self.organism_name

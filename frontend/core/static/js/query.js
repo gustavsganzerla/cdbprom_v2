@@ -1,8 +1,8 @@
 let currentPage = 1;
-
-
 let originalThead = null;
 let originalTbody = null;
+
+let currentOrganismOverride = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const table = document.getElementById('results-table');
@@ -10,16 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     originalThead = table.querySelector('thead').innerHTML;
     originalTbody = table.querySelector('tbody').innerHTML;
   }
-
-
   const form = document.getElementById("query-form");
   if (form) {
     form.addEventListener("submit", function(e) {
       e.preventDefault();
+      currentOrganismOverride = null;
       fetchData(1);
     });
   }
-
 
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("view-icon")) {
@@ -79,13 +77,16 @@ function renderPaginationControls(totalPages, currentPage) {
 function fetchData(page = 1, organismOverride = null) {
   currentPage = page;
 
+  if (organismOverride !== null) {
+    currentOrganismOverride = organismOverride;
+  }
 
   const organismField = document.getElementById("organism");
   const annotationField = document.getElementById("annotation");
   const ncbiField = document.getElementById("ncbi");
 
-  const organism = organismOverride
-      ? encodeURIComponent(organismOverride)
+  const organism = currentOrganismOverride
+      ? encodeURIComponent(currentOrganismOverride)
       : (organismField ? encodeURIComponent(organismField.value) : '');
   
   const annotation = annotationField ? annotationField.value : '';
@@ -99,7 +100,6 @@ function fetchData(page = 1, organismOverride = null) {
   
 
   fetch(`/api/query/?${params.toString()}`)
-    
     .then(response => response.json())
     .then(data => {
       const table = document.getElementById('results-table');
@@ -107,7 +107,6 @@ function fetchData(page = 1, organismOverride = null) {
 
       const tbody = table.querySelector('tbody');
       const thead = table.querySelector('thead');
-
 
       // query
       const resultsQuery = document.getElementById('results-query');
@@ -130,8 +129,6 @@ function fetchData(page = 1, organismOverride = null) {
       if (resultsCount) {
         resultsCount.innerHTML = `Total records: <strong>${data.count}</strong>`;
       }
-      
-
       //downloa button
       const downloadContainer = document.getElementById('download-container');
       if (downloadContainer) {
@@ -140,10 +137,7 @@ function fetchData(page = 1, organismOverride = null) {
           const btn = document.createElement('button');
           btn.className = 'btn';
           btn.textContent = 'Download';
-
           btn.dataset.organism = organismOverride || (document.getElementById("organism")?.value || "");
-
-          
           downloadContainer.appendChild(btn);
         }
       }
@@ -159,15 +153,62 @@ function fetchData(page = 1, organismOverride = null) {
           </tr>
         `;
 
-        // Fill table body
-        tbody.innerHTML = data.results.map(item => `
-          <tr>
-            <td>${item.ncbi_id}</td>
-            <td>${item.organism_name}</td>
-            <td>${item.sequence}</td>
-            <td>${item.annotation}</td>
-          </tr>
-        `).join('');
+        // Fill table body with truncation
+        tbody.innerHTML = data.results.map(item => {
+          const annotation = item.annotation || '';
+          const maxLength = 10;
+
+          if (annotation.length > maxLength) {
+            const shortAnnotation = annotation.slice(0, maxLength) + "...";
+            return `
+              <tr>
+                <td>${item.ncbi_id}</td>
+                <td>${item.organism_name}</td>
+                <td>${item.sequence}</td>
+                <td class="annotation-cell" data-full="${annotation}">
+                  ${shortAnnotation} <span class="expand-btn" style="color:blue; cursor:pointer;">[expand]</span>
+                </td>
+              </tr>
+            `;
+          } else {
+            return `
+              <tr>
+                <td>${item.ncbi_id}</td>
+                <td>${item.organism_name}</td>
+                <td>${item.sequence}</td>
+                <td>${annotation}</td>
+              </tr>
+            `;
+          }
+        }).join('');
+        tbody.querySelectorAll('.annotation-cell').forEach(cell => {
+          const btn = cell.querySelector('.expand-btn');
+          if (!btn) return;
+        
+          // store the original short text
+          const fullText = cell.dataset.full;
+          const maxLength = 10;
+          const shortText = fullText.slice(0, maxLength) + "...";
+        
+          // initial state
+          cell.dataset.expanded = "false";
+        
+          btn.addEventListener('click', () => {
+            const expanded = cell.dataset.expanded === "true";
+            if (!expanded) {
+              cell.firstChild.textContent = fullText + " "; // set full text
+              btn.textContent = "[collapse]";
+              cell.dataset.expanded = "true";
+            } else {
+              cell.firstChild.textContent = shortText + " "; // set truncated text
+              btn.textContent = "[expand]";
+              cell.dataset.expanded = "false";
+            }
+          });
+        });
+        
+        
+        
         table.style.display = 'table';
       } else {
         // If no results, restore original organisms table
@@ -185,4 +226,6 @@ function fetchData(page = 1, organismOverride = null) {
       const resultsCount = document.getElementById('results-count');
       if (resultsCount) resultsCount.textContent = 'Error fetching data.';
     });
-}
+    }
+    
+

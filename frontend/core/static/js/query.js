@@ -156,7 +156,7 @@ function fetchData(page = 1, organismOverride = null) {
         // Fill table body with truncation
         tbody.innerHTML = data.results.map(item => {
           const annotation = item.annotation || '';
-          const maxLength = 10;
+          const maxLength = 50;
 
           if (annotation.length > maxLength) {
             const shortAnnotation = annotation.slice(0, maxLength) + "...";
@@ -187,7 +187,7 @@ function fetchData(page = 1, organismOverride = null) {
         
           // store the original short text
           const fullText = cell.dataset.full;
-          const maxLength = 10;
+          const maxLength = 50;
           const shortText = fullText.slice(0, maxLength) + "...";
         
           // initial state

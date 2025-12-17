@@ -18,7 +18,12 @@ import requests
 logger = logging.getLogger(__name__)
 
 def home(request):
-    return render(request, 'core/home.html')
+    all_data = PromoterModel.objects.values('organism_name')
+    unique_organisms = len({d['organism_name'] for d in all_data})
+    n_promoters = len(all_data)
+    
+    return render(request, 'core/home.html', {'unique_organisms':unique_organisms,
+                                              'n_promoters':n_promoters})
 
 
 def query(request):
@@ -60,14 +65,6 @@ def predict(request):
     output = []
     form = InputForm()
     return render(request, 'core/predict.html', {'form':form})
-
-
-
-
-                    
-            
-
-    
 
 
 

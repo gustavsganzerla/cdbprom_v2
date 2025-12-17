@@ -87,7 +87,8 @@ function fetchData(page = 1, organismOverride = null) {
   const organism = organismOverride
       ? encodeURIComponent(organismOverride)
       : (organismField ? encodeURIComponent(organismField.value) : '');
-  const annotation = annotationField ? encodeURIComponent(annotationField.value) : '';
+  
+  const annotation = annotationField ? annotationField.value : '';
   const ncbiID = ncbiField ? encodeURIComponent(ncbiField.value) : '';
 
   const params = new URLSearchParams();
@@ -95,8 +96,10 @@ function fetchData(page = 1, organismOverride = null) {
   if (annotation) params.append("annotation", annotation);
   if (ncbiID) params.append("ncbi_id", ncbiID);
   params.append("page", page);
+  
 
   fetch(`/api/query/?${params.toString()}`)
+    
     .then(response => response.json())
     .then(data => {
       const table = document.getElementById('results-table');
@@ -114,7 +117,8 @@ function fetchData(page = 1, organismOverride = null) {
           content.push(`Organism: <strong>${organism}</strong>`);
         }
         if (annotation){
-          content.push(`Annotation: <strong>${annotation}</strong>`);
+          const decodedAnnotation = decodeURIComponent(annotation)
+          content.push(`Annotation: <strong>${decodedAnnotation}</strong>`);
         }
         if (ncbiID){
           content.push(`NCBI ID: <strong>${ncbiID}</strong>`);

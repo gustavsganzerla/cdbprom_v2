@@ -12,6 +12,7 @@ from Bio import SeqIO
 from io import StringIO
 import logging
 import requests
+from urllib.parse import unquote_plus
 
 # Create your views here.
 
@@ -82,9 +83,12 @@ class PromoterQueryView(APIView):
         if organism_name:
             query &= Q(organism_name__icontains=organism_name)
         if annotation:
+            annotation = unquote_plus(annotation)
             query &= Q(annotation__icontains=annotation)
         if ncbi_id:
             query &= Q(ncbi_id__icontains=ncbi_id)
+
+        
         
         ###here, the sql query is prepared
         queryset = PromoterModel.objects.filter(query)

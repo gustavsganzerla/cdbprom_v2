@@ -3,7 +3,7 @@ from . forms import QueryForm, InputForm
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import PromoterModel
+from .models import PromoterModel, Organism
 from .serializers import PromoterModelSerializer
 from django.db.models import Q, Count
 from django.http import JsonResponse, HttpResponse
@@ -22,9 +22,12 @@ def home(request):
     all_data = PromoterModel.objects.values('organism_name')
     unique_organisms = len({d['organism_name'] for d in all_data})
     n_promoters = len(all_data)
+    taxonomy = Organism.objects.values('kingdom')
+    unique_families = len({d['kingdom'] for d in taxonomy})
     
     return render(request, 'core/home.html', {'unique_organisms':unique_organisms,
-                                              'n_promoters':n_promoters})
+                                              'n_promoters':n_promoters,
+                                              'taxonomy':unique_families})
 
 
 def query(request):

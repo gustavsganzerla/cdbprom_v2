@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand
 from core.models import PromoterModel
 from pathlib import Path
+import re
+
+pattern = r"GCF_\d+\.\d+"
 
 class Command(BaseCommand):
     help = "Import data into the database"
@@ -33,11 +36,18 @@ class Command(BaseCommand):
                         values = line.strip().split('\t')
                         parts = file.name.split('_')
                         name = f"{parts[0]}_{parts[1]}" if len(parts) > 1 else parts[0]
+                        match = re.search(pattern, file.name)
+                        if match:
+                            assembly_id = match.group()
+                        else:
+                            assembly_id = "NA"
 
                         if len(values)>3:
                             print(f"organism_name: {name} ({len(name)})")
+                            print(f"assembly id: {assembly_id}")
                             print(f"sequence: {values[8]} ({len(values[8])})")
                             print(f"annotation: {values[9]} ({len(values[9])})")
+                            
                             obj = PromoterModel(
                                 organism_name = name,
                                 ncbi_id = values[0],

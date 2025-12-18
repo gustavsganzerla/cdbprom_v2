@@ -1,46 +1,57 @@
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("organism");
   const list = document.getElementById("autocomplete-list");
+  const MIN_LENGTH = 3;
 
-
+  let currentIndex = -1;
 
   if (!input || !list) return;
 
+  function clearList() {
+    list.innerHTML = "";
+    list.style.display = "none";
+    currentIndex = -1;
+  }
+
+  function highlightMatch(text, term) {
+    const regex = new RegExp(`(${term})`, "ig");
+    return text.replace(regex, "<strong>$1</strong>");
+  }
+
   input.addEventListener("input", function () {
     const term = this.value.trim();
+    clearList();
 
-    // clear previous suggestions
-    list.innerHTML = "";
-    list.style.display = "none"; // hide before repopulating
-
-    if (!term) return;
+    if (term.length < MIN_LENGTH) return;
 
     fetch(`/autocomplete_organism_name/?q=${encodeURIComponent(term)}`)
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         if (!data.length) return;
-        console.log(data);
 
-        data.forEach(item => {
+        data.forEach((item, index) => {
           const li = document.createElement("li");
-          li.textContent = item;
+          li.innerHTML = highlightMatch(item, term);
+          li.dataset.index = index;
+
           li.addEventListener("click", () => {
-            input.value = item; // set input value
-            list.innerHTML = ""; // clear
-            list.style.display = "none"; // hide suggestions
+            input.value = item;
+            clearList();
           });
+
           list.appendChild(li);
         });
 
-        list.style.display = "block"; // <--- show results!
+        list.style.display = "block";
       });
   });
 
-  // Optional: close the list if clicking outside
+
+
+  // Close when clicking outside
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".autocomplete-wrapper")) {
-      list.innerHTML = "";
-      list.style.display = "none";
+      clearList();
     }
   });
 });

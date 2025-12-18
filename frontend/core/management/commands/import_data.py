@@ -1,9 +1,12 @@
 from django.core.management.base import BaseCommand
-from core.models import PromoterModel
+from core.models import PromoterModel, Organism
 from pathlib import Path
 import re
 
 pattern = r"GCF_\d+\.\d+"
+
+organism_cache = {o.assembly_annotation: o for o in Organism.objects.all()}
+
 
 class Command(BaseCommand):
     help = "Import data into the database"
@@ -39,12 +42,13 @@ class Command(BaseCommand):
                         match = re.search(pattern, file.name)
                         if match:
                             assembly_id = match.group()
+                            organism_instance = organism_cache[assembly_id]
                         else:
                             assembly_id = "NA"
 
                         if len(values)>3:
                             print(f"organism_name: {name} ({len(name)})")
-                            print(f"assembly id: {assembly_id}")
+                            print(f"assembly id: {organism_instance}")
                             print(f"sequence: {values[8]} ({len(values[8])})")
                             print(f"annotation: {values[9]} ({len(values[9])})")
                             
@@ -55,7 +59,8 @@ class Command(BaseCommand):
                                 end_position = int(values[4]),
                                 prediction_score = float(values[6]),
                                 sequence = values[8],
-                                annotation = values[9]
+                                annotation = values[9],
+                                assembly_annotation = organism_instance
                             )
                             obj.save()
         self.stdout.write(self.style.SUCCESS("All files imported successfully"))

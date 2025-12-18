@@ -20,9 +20,19 @@ logger = logging.getLogger(__name__)
 
 def home(request):
     all_data = PromoterModel.objects.values('organism_name')
+    assemblies = PromoterModel.objects.values('assembly_annotation__assembly_annotation')
+
     unique_organisms = len({d['organism_name'] for d in all_data})
     n_promoters = len(all_data)
+
+
     taxonomy = Organism.objects.values('kingdom')
+
+   
+    
+    print(assemblies)
+
+
     unique_families = len({d['kingdom'] for d in taxonomy})
     
     return render(request, 'core/home.html', {'unique_organisms':unique_organisms,

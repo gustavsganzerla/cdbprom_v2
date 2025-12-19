@@ -58,7 +58,8 @@ document.getElementById("new-form").addEventListener("submit", async function(e)
 
             
             // Build table
-            buildTable("results-container", data.output);
+            const columnOrder = ["id", "Predicted class", "Probability promoter", "Probability non-promoter", "Coordinates", "Sequence", "Message"]
+            buildTable("results-container", data.output, columnOrder);
             // Show results block
             document.getElementById("results-container").style.display = "block";
 
@@ -107,7 +108,7 @@ function parseFasta(fastaText) {
 
 
 //build table to show results
-function buildTable(containerId, dataArray) {
+function buildTable(containerId, dataArray, columnOrder) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
 
@@ -119,10 +120,13 @@ function buildTable(containerId, dataArray) {
     const table = document.createElement("table");
     table.id = "results-table"; 
 
+    const keys = columnOrder || Object.keys(dataArray[0]);
+
+    
+
     // Create header
     const header = table.createTHead();
     const headerRow = header.insertRow(0);
-    const keys = Object.keys(dataArray[0]);
     keys.forEach(key => {
         const th = document.createElement("th");
         th.innerText = key;

@@ -182,15 +182,13 @@ class DownloadPredictView(APIView):
         writer = csv.writer(response)
 
         if data:
-            writer.writerow(data[0].keys())
+            column_order = ["id", "Predicted class", "Probability promoter", "Probability non-promoter", "Coordinates", "Sequence", "Message"]
+            writer.writerow(column_order)
         
         for row in data:
-            writer.writerow(row.values())
+            writer.writerow([row.get(col, "") for col in column_order])
         
         return response
-
-
-
 
 
 def autocomplete_organism_name(request):

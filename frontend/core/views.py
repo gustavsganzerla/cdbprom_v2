@@ -21,23 +21,24 @@ logger = logging.getLogger(__name__)
 
 def home(request):
     all_data = PromoterModel.objects.values('organism_name')
-    assemblies = PromoterModel.objects.values('assembly_annotation__assembly_annotation')
 
     unique_organisms = len({d['organism_name'] for d in all_data})
     n_promoters = len(all_data)
 
 
-    taxonomy = Organism.objects.values('kingdom')
 
-   
+    list_unique_kingdoms = []
+    all_data_kingdoms = PromoterModel.objects.values('assembly_annotation__kingdom')
+    for family in all_data_kingdoms:
+        if family['assembly_annotation__kingdom'] not in list_unique_kingdoms:
+            list_unique_kingdoms.append(family['assembly_annotation__kingdom'])
 
 
 
-    unique_families = len({d['kingdom'] for d in taxonomy})
     
     return render(request, 'core/home.html', {'unique_organisms':unique_organisms,
                                               'n_promoters':n_promoters,
-                                              'taxonomy':unique_families})
+                                              'kingdoms':len(list_unique_kingdoms)})
 
 
 def query(request):
@@ -73,17 +74,21 @@ def organisms(request):
         .order_by('organism_name')  
     )
 
-    families = (
-        Organism.objects
-        .values('kingdom')
-        .annotate(count=Count('assembly_annotation'))
+
+
+    kingdoms = (
+        PromoterModel.objects
+        .values('assembly_annotation__kingdom')
+        .annotate(unique_organisms=Count('assembly_annotation__organism_name', distinct=True))
     )
 
-    print(organisms)
+    
+
+
         
 
     return render(request, 'core/organisms.html', {'organisms': organisms,
-                                                   'families':families})
+                                                   'kingdoms':kingdoms})
 
 def predict(request):
     output = []

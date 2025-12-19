@@ -109,48 +109,39 @@ function parseFasta(fastaText) {
 //build table to show results
 function buildTable(containerId, dataArray) {
     const container = document.getElementById(containerId);
-
-
     container.innerHTML = "";
 
     if (!dataArray || dataArray.length === 0) {
         container.innerHTML = "<p>No results</p>";
         return;
     }
-    
 
     const table = document.createElement("table");
-    table.style.borderCollapse = "collapse";
-    table.style.width = "100%";
+    table.id = "results-table"; 
 
-
+    // Create header
     const header = table.createTHead();
     const headerRow = header.insertRow(0);
     const keys = Object.keys(dataArray[0]);
-    keys.forEach((key, idx) => {
+    keys.forEach(key => {
         const th = document.createElement("th");
         th.innerText = key;
-        th.style.border = "1px solid #ccc";
-        th.style.padding = "8px";
-        th.style.textAlign = "left";
         headerRow.appendChild(th);
     });
 
-
+    // Create body
     const tbody = table.createTBody();
     dataArray.forEach(rowData => {
         const row = tbody.insertRow();
         keys.forEach(key => {
             const cell = row.insertCell();
             cell.innerText = rowData[key];
-            cell.style.border = "1px solid #ccc";
-            cell.style.padding = "8px";
         });
     });
 
-
     container.appendChild(table);
 }
+
 
 async function downloadPrediction(data){
     const response = await fetch("/api/downloadPredict", {

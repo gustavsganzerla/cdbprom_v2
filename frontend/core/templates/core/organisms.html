@@ -18,15 +18,15 @@
   <table class="custom-table">
     <thead>
       <tr>
-        <th>Family Name</th>
+        <th>Major bacterial phyla/lineages</th>
         <th>Number of Bacteria</th>
       </tr>
     </thead>
     <tbody>
-      {% for item in families %}
+      {% for item in kingdoms %}
       <tr>
-        <td>{{ item.kingdom }}</td>
-        <td>{{ item.count }}</td>
+        <td>{{ item.assembly_annotation__kingdom }}</td>
+        <td>{{ item.unique_organisms }}</td>
       </tr>
       {% endfor %}
     </tbody>

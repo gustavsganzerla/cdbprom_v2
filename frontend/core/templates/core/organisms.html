@@ -1,42 +1,195 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Oganisms{% endblock %}
-{% block content %}
+{% block title %}Organisms{% endblock %}
 
+{% block content %}
 <h1>Supported Organisms</h1>
 
 
 
-<div id="results" class="results-section"></div>
-<p id="results-query"></p>
-<p id="results-count"></p>
-<div id="download-container"></div>
-<div class="table-container">
-  <table id="results-table" class="table-custom">
+<div class="table-card">
+  <h2>Kingdoms</h2>
+<button id="toggle-families-btn" class="btn btn-outline-secondary mb-3">
+  Show
+</button>
+
+<div id="families-wrapper" class="table-wrapper">
+  <table class="custom-table">
     <thead>
-        <tr>
-            <th>Organism Name</th>
-            <th>Number of Promoters</th>
-            <th>Actions</th>
-          </tr>
+      <tr>
+        <th>Family Name</th>
+        <th>Number of Bacteria</th>
+      </tr>
     </thead>
     <tbody>
-      {% for item in organisms %}
+      {% for item in families %}
       <tr>
-        <td>{{ item.organism_name }}</td>
+        <td>{{ item.kingdom }}</td>
         <td>{{ item.count }}</td>
-        <td>
-          <i class="fa-solid fa-eye view-icon" data-organism="{{ item.organism_name }}"></i>
-        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+</div>
+</div>
+
+<!-- Second table -->
+<div class="table-card">
+  <h2>Species</h2>
+  <button id="toggle-species-btn" class="btn btn-outline-secondary mb-3">Show</button>
+  <div id="species-wrapper" class="table-wrapper">
+    <table class="custom-table" id="results-table-organisms">
+      <thead>
+        <tr>
+          <th>Species Name</th>
+          <th>Number of Promoters</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in organisms %}
+        <tr>
+          <td>{{ item.organism_name }}</td>
+          <td>{{ item.count }}</td>
+          <td>
+            <i class="fa-solid fa-eye view-icon" data-organism="{{ item.organism_name }}"></i>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  
+  <!-- Results Section -->
+<div id="results" class="results-section"></div>
+<p id="results-query"></p>
+<p id="results-count"></p>
+<div id="download-container"></div><button type="button" id="reset-form">Reset</button>
+
+
+<!-- Table Section -->
+<div class="table-container">
+  <table id="results-table" class="table-custom" style="display: none;">
+    <thead>
+      <tr>
+        <th>NCBI ID</th>
+        <th>Organism Name</th>
+        <th>Promoter Sequence</th>
+        <th>Annotation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- this will be filled dynamically by the js -->
+    </tbody>
+  </table>
+</div>
+
+
+  <!-- Pagination -->
   <div id="pagination"></div>
+</div>
 </div>
 
 <script src="{% static 'js/query.js' %}"></script>
 <script src="{% static 'js/download_query.js' %}"></script>
+<script src="{% static 'js/reset.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggles = [
+      { btnId: "toggle-families-btn", wrapperId: "families-wrapper" },
+      { btnId: "toggle-species-btn", wrapperId: "species-wrapper", clearResults: true },
+    ];
+  
+    toggles.forEach(({ btnId, wrapperId, clearResults }) => {
+      const btn = document.getElementById(btnId);
+      const wrapper = document.getElementById(wrapperId);
+  
+      wrapper.style.display = "none"; // hide by default
+  
+      btn.addEventListener("click", () => {
+        const currentlyVisible = window.getComputedStyle(wrapper).display !== "none";
+        wrapper.style.display = currentlyVisible ? "none" : "block";
+        btn.textContent = currentlyVisible ? "Show" : "Hide";
+  
+        if (currentlyVisible && clearResults) {
+          // Clear results scoped to this card
+          const card = wrapper.closest('.table-card');
+          if (!card) return;
+          
+        }
+      });
+    });
+  });
+  
+  
+  
+  
+  
+  
+</script>
 
-{%endblock%}
+<style>
+  /* Card wrapper */
+  .table-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  /* Scoped wrapper for horizontal scroll if needed */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
+  }
+  
+  /* Shared table styling */
+  .custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background-color: #fff;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Header */
+  .custom-table thead th {
+    background-color: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  
+  /* Rows */
+  .custom-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  /* Hover effect */
+  .custom-table tbody tr:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Rounded corners */
+  .custom-table thead tr:first-child th:first-child {
+    border-top-left-radius: 12px;
+  }
+  .custom-table thead tr:first-child th:last-child {
+    border-top-right-radius: 12px;
+  }
+  .custom-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+  }
+  .custom-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+  }
+  </style>
+{% endblock %}

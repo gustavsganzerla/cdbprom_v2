@@ -13,6 +13,7 @@ from io import StringIO
 import logging
 import requests
 from urllib.parse import unquote_plus
+import math
 
 # Create your views here.
 
@@ -29,8 +30,7 @@ def home(request):
     taxonomy = Organism.objects.values('kingdom')
 
    
-    
-    print(assemblies)
+
 
 
     unique_families = len({d['kingdom'] for d in taxonomy})
@@ -73,7 +73,17 @@ def organisms(request):
         .order_by('organism_name')  
     )
 
-    return render(request, 'core/organisms.html', {'organisms': organisms})
+    families = (
+        Organism.objects
+        .values('kingdom')
+        .annotate(count=Count('assembly_annotation'))
+    )
+
+    print(organisms)
+        
+
+    return render(request, 'core/organisms.html', {'organisms': organisms,
+                                                   'families':families})
 
 def predict(request):
     output = []

@@ -1,29 +1,38 @@
-///JS to clear the forms
 document.addEventListener("DOMContentLoaded", () => {
-  const form1 = document.getElementById("query-form");
-  const resultsDiv = document.getElementById("results");
-  const resultsTable = document.getElementById("results-table");
-  const resultsQuery = document.getElementById("results-query");
-  const resultsCount = document.getElementById("results-count");
-  const pagination = document.getElementById("pagination");
-  const downloadContainer = document.getElementById('download-container');
-  
-
   const clearBtn = document.getElementById("reset-form");
+  if (!clearBtn) return; // exit if no reset button found
 
   clearBtn.addEventListener("click", () => {
-    // clear form fields
-    form1.reset();
+    // Try to reset a form if it exists
+    const form = document.getElementById("query-form");
+    if (form) form.reset();
 
-    // clear results
-    resultsDiv.innerHTML = "";
-    resultsQuery.innerHTML = "";
-    resultsCount.innerHTML = "";
-    pagination.innerHTML = "";
-    downloadContainer.innerHTML = "";
+    // List of result elements to clear (update IDs as needed)
+    const elementsToClear = [
+      "results",
+      "results-table",
+      "results-query",
+      "results-count",
+      "pagination",
+      "download-container",
+      "results-container"
+    ];
 
-    // clear table body and hide it
-    resultsTable.querySelector("tbody").innerHTML = "";
-    resultsTable.style.display = "none";
+    elementsToClear.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      
+      // clear table body and hide table
+      if (el.tagName === "TABLE") {
+        const tbody = el.querySelector("tbody");
+        if (tbody) tbody.innerHTML = "";
+        el.style.display = "none";
+      } else {
+        el.innerHTML = "";
+      }
+    });
+
+    // Optionally clear all inputs outside a form
+    document.querySelectorAll("input, textarea, select").forEach(input => input.value = "");
   });
 });

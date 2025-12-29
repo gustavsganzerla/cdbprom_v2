@@ -106,20 +106,44 @@ class PromoterQueryView(APIView):
         organism_name = request.query_params.get('organism_name')
         annotation = request.query_params.get('annotation')
         ncbi_id = request.query_params.get('ncbi_id')
+        family = request.query_params.get('family')
+        organism_id = request.query_params.get('organism_id')
+
 
         ###here, i build the query to send to the DB API
         if organism_name:
+            organism_name = unquote_plus(organism_name)
             query &= Q(organism_name__icontains=organism_name)
         if annotation:
             annotation = unquote_plus(annotation)
             query &= Q(annotation__icontains=annotation)
         if ncbi_id:
             query &= Q(ncbi_id__icontains=ncbi_id)
+        if organism_id:
+            query &= Q(assembly_annotation_id=organism_id)
+            
+        
+        if family and not organism_id:
+            organisms =(
+                Organism.objects
+                .filter(kingdom=family)
+                .annotate(sequence_count=Count("promotermodel"))
+                .filter(sequence_count__gt=0)
+                .order_by("organism_name")
+                .values("id", "organism_name", "sequence_count")
+            )
 
-        
-        
+            return Response({
+                "level":"family",
+                "family":family,
+                "results":list(organisms)
+            })
+
+
+
         ###here, the sql query is prepared
         queryset = PromoterModel.objects.filter(query)
+
 
         ###here is when the query is executed
         paginator = PageNumberPagination()
@@ -140,33 +164,49 @@ class PromoterDownloadCSVView(APIView):
         organism_name = request.query_params.get('organism_name')
         annotation = request.query_params.get('annotation')
         ncbi_id = request.query_params.get('ncbi_id')
+        family = request.query_params.get('family')
+        organism_id = request.query_params.get('organism_id')
 
+        print(f"Query:{request.query_params}")
+
+        # Build query
         if organism_name:
-            query &= Q(organism_name__icontains=organism_name)
+            organism_name = unquote_plus(organism_name)
+            query &= Q(assembly_annotation__organism_name__icontains=organism_name)
+
         if annotation:
+            annotation = unquote_plus(annotation)
             query &= Q(annotation__icontains=annotation)
+
         if ncbi_id:
             query &= Q(ncbi_id__icontains=ncbi_id)
 
+        if organism_id:
+            query &= Q(assembly_annotation_id=organism_id)
+
+
+        # If no filters are provided, this will return all records
         results = PromoterModel.objects.filter(query).values(
             "ncbi_id", "organism_name", "sequence", "annotation"
         )
+
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="promoters.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(['NCBI_ID', 'Organism_name', 'Promoter_sequence', 'Annotation'])
+        writer.writerow(["NCBI ID", "Organism Name", "Sequence", "Annotation"])
 
-        for promoter in results:
+        for row in results:
             writer.writerow([
-                promoter["ncbi_id"],
-                promoter["organism_name"],
-                promoter["sequence"],
-                promoter["annotation"],
+                row['ncbi_id'],
+                row['organism_name'],
+                row['sequence'],
+                row['annotation']
             ])
 
         return response
+
    
 
 class DownloadPredictView(APIView):

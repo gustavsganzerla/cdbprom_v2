@@ -118,6 +118,7 @@ function fetchData(page = 1, organismOverride = null) {
   if (organismId) params.append("organism_id", organismId);
 
   
+
   params.append("page", page);
   
   
@@ -125,6 +126,8 @@ function fetchData(page = 1, organismOverride = null) {
   fetch(`/api/query/?${params.toString()}`)
     .then(response => response.json())
     .then(data => {
+      const resultsCard = document.getElementById('results-card');
+      resultsCard.style.display = 'block';
       const table = document.getElementById('results-table');
       if (!table) return;
       const tbody = table.querySelector('tbody');
@@ -147,6 +150,7 @@ function fetchData(page = 1, organismOverride = null) {
       if (resultsCount) {
         resultsCount.innerHTML = `Total records: <strong>${data.count}</strong>`;
       }
+      console.log(data)
       //downloa button
       const downloadContainer = document.getElementById('download-container');
       if (downloadContainer) {
@@ -168,6 +172,7 @@ function fetchData(page = 1, organismOverride = null) {
 
       ///i will branch the rendering of the table based on sequence or family
       if (data.results && data.results.length > 0) {
+        
         if (data.level === 'family'){
           thead.innerHTML = `
             <tr>

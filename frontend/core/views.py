@@ -50,6 +50,7 @@ def query(request):
         if form.is_valid():
             gene = form.cleaned_data['gene_name']
 
+
     return render(request, 'core/query.html', {'form':form})
 
 
@@ -74,13 +75,12 @@ def organisms(request):
         .order_by('organism_name')  
     )
 
-
-
     kingdoms = (
         PromoterModel.objects
         .values('assembly_annotation__kingdom')
         .annotate(unique_organisms=Count('assembly_annotation__organism_name', distinct=True))
     )
+    print(kingdoms)
 
     
 
@@ -136,15 +136,13 @@ class PromoterQueryView(APIView):
             return Response({
                 "level":"family",
                 "family":family,
-                "results":list(organisms)
+                "results":list(organisms),
+                "count":len(list(organisms))
             })
-
-
 
         ###here, the sql query is prepared
         queryset = PromoterModel.objects.filter(query)
-
-
+        
         ###here is when the query is executed
         paginator = PageNumberPagination()
         paginator.page_size = 10
@@ -152,6 +150,7 @@ class PromoterQueryView(APIView):
 
         ###here the queryset is converted to a python dictionary
         serializer = PromoterModelSerializer(page, many=True)
+        
 
         ###here, the data (ready) is sent to the frontend via http
         return paginator.get_paginated_response(serializer.data)

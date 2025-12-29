@@ -34,31 +34,30 @@
 </div>
 
 <!-- Results Section -->
-<div id="results" class="results-section"></div>
-<p id="results-query"></p>
-<p id="results-count"></p>
-<div id="download-container"></div>
+<div id="results-card" class="table-card" >
+  <!-- Results Section -->
+  <div id="results" class="results-section"></div>
+  <p id="results-query"></p>
+  <p id="results-count"></p>
+  
+  
 
+  <!-- Table Section -->
+  <div class="table-container">
+    <table id="results-table" class="table-custom">
+      <div id="download-container"></div>
+      <thead></thead>
+      <tbody>
+        <!-- Filled dynamically by JS -->
+      </tbody>
+    </table>
+    
+  </div>
 
-<!-- Table Section -->
-<div class="table-container">
-  <table id="results-table" class="table-custom" style="display: none;">
-    <thead>
-      <tr>
-        <th>NCBI ID</th>
-        <th>Organism Name</th>
-        <th>Promoter Sequence</th>
-        <th>Annotation</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- this will be filled dynamically by the js -->
-    </tbody>
-  </table>
+  <!-- Pagination -->
+  <div id="pagination"></div>
 </div>
 
-<!-- Pagination -->
-<div id="pagination"></div>
 
 <script src="{% static 'js/autocomplete_organism_name.js' %}"></script>
 <script src="{% static 'js/query.js' %}"></script>
@@ -66,7 +65,66 @@
 <script src="{% static 'js/download_query.js' %}"></script>
   
   
-
+<style>
+  .table-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
+  }
+  
+  .custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background-color: #fff;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .custom-table thead th {
+    background-color: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  
+  .custom-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .custom-table tbody tr:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .custom-table thead tr:first-child th:first-child {
+    border-top-left-radius: 12px;
+  }
+  .custom-table thead tr:first-child th:last-child {
+    border-top-right-radius: 12px;
+  }
+  .custom-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+  }
+  .custom-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+  }
+  #results-card {
+    display: none; /* hide initially */
+  }
+  </style>
   
 
 

@@ -305,7 +305,7 @@
         <a class="nav-link {% if request.resolver_match.url_name == 'organisms' %}active{% endif %}" href="{% url 'organisms' %}">Supported Organisms</a>
         
         <a class="nav-link 
-        {% if request.resolver_match.url_name == 'resources' or request.resolver_match.url_name == 'resources_api_db' %}active{% endif %}" 
+        {% if request.resolver_match.url_name == 'resources' or request.resolver_match.url_name == 'resources_api_db' or request.resolver_match.url_name == 'resources_api_prediction' %}active{% endif %}" 
         href="{% url 'resources' %}">Resources</a>
 
 

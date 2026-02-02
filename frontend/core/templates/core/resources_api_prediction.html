@@ -1,0 +1,248 @@
+{% extends 'base.html'%}
+
+{% block title %}Resources{% endblock %}
+
+{% block content%}
+
+<head>
+    <meta charset="UTF-8">
+    <title>CDBProm v2.0 — Prediction API Documentation</title>
+    
+    
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fafafa;
+            line-height: 1.6;
+            color: #333;
+        }
+    
+        .container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+    
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+    
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+    
+        h2 {
+            margin-top: 50px;
+            font-size: 1.7rem;
+        }
+    
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-top: 25px;
+        }
+    
+        code {
+            background: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+    
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+    
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+    
+        table th {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+    
+        .endpoint {
+            font-size: 1.1rem;
+            background: #007bff;
+            color: white;
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+    
+        .badge {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+    
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    
+    </style>
+    
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>CDBProm v2.0 — Prediction API</h1>
+            <p>This API provides programmatic access to the promoter prediction functionality used by CDBProm v2.0.<br>
+                Users can submit their own sequences to the prediction API.
+            
+            
+
+            <div class="section">
+                <h2>Request Format</h2>
+                <p> Endpoint: <code>https://xxx/predict/</code></p>
+                <p>Content-type: application/json</p>
+            </div>
+
+            <div class="section">
+                <h2>Request Body (JSON)</h2>
+                <p>The request must be sent as a JSON object containing a list of sequences in FASTA format.</p>
+                <table>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>String</td>
+                        <td>Yes</td>
+                        <td>FASTA header of the sequence</td>
+                    </tr>
+                    <tr>
+                        <td>seq</td>
+                        <td>String</td>
+                        <td>Yes</td>
+                        <td>Sequence in nucleotides</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="section">
+                <h2>Input Structure</h2>
+                <pre>
+                    "sequences": [
+                        {
+                            "id": "seq1",
+                            "seq": "TTTCGTAACTGGGTCGGATTTCCTGCAAGATCCTTTGTGCCTCCGGAGGGGGCTCGTGCC"
+                        }
+                        {
+                            "id": "seq2",
+                            "seq": "GCCGGGACGCACGGGACCGTCGGCGCAAGTATGCGCAACCTGGTCACAGAGGAGAGCGTC"
+                        }]
+                </pre>
+            </div>
+            <div class="section">
+                <h2>Constraints</h2>
+                <p>Requests violating these constraints will return an error.</p>
+
+                <table>
+                    <tr>
+                        <th>Constraint</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Maximum sequences per request</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>Minimum sequence length</td>
+                        <td>60</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum sequence length</td>
+                        <td>1000</td>
+                    </tr>
+                </table>
+                <p>For requests exceding 100 sequences, please refer to the local implementation with our Docker image.</p>
+            </div>
+            <div class="section">
+                <h2>Response Structure</h2>
+                <table>
+                    <tr>
+                        <th>Field</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>FASTA header.</td>
+                    </tr>
+                    <tr>
+                        <td>Coordinates</td>
+                        <td>Coordinates on the sequence where the prediction was made (for sequences with length > 60, a subsequences of length 60 considering a step size of 10 are generated).</td>
+                    </tr>
+                    <tr>
+                        <td>Probability non-promoter</td>
+                        <td>Probability (0-100%) of a sequence beloning to the non-promoter class (output of the softmax layer)</td>
+                    </tr>
+                    <tr>
+                        <td>Probability promoter</td>
+                        <td>Probability (0-100%) of a sequence beloning to the promoter class (output of the softmax layer)</td>
+                    </tr>
+                    <tr>
+                        <td>Predicted class</td>
+                        <td>Predicted class of a sequence (≥0.5 are promoters)</td>
+                    </tr>
+                    <tr>
+                        <td>Message</td>
+                        <td>Message indicating how the API treated the input sequence
+                            <ul>
+                                <li>Success</li>
+                                <li>Error. Sequence with length greater than 1000. The maximum length per sequence is 1000.</li>
+                                <li>Input sequence(s) too short. The minimum length is 60.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="section">
+                <h2>Response Structure</h2>
+                <pre>
+                    "output": [
+                        {
+                            "id": "seq1",
+                            "Coordinates": "1-60",
+                            "Predicted class": "Promoter",
+                            "Probability promoter": "98.94%",
+                            "Probability non-promoter": "1.06%",
+                            "Sequence": "TTTCGTAACTGGGTCGGATTTCCTGCAAGATCCTTTGTGCCTCCGGAGGGGGCTCGTGCC"
+                        }]
+                </pre>
+            </div>
+
+        </div>
+    </body>
+{%endblock%}

@@ -61,6 +61,9 @@ def resources(request):
 def resources_api_db(request):
     return render(request, 'core/resources_api_db.html')
 
+def resources_api_prediction(request):
+    return render(request, 'core/resources_api_prediction.html')
+
 def contact(request):
     return render(request, 'core/contact.html')
 

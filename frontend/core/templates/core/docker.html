@@ -1,0 +1,154 @@
+{% extends 'base.html'%}
+
+{% block title %}Docker Usage{% endblock %}
+
+{% block content%}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Docker Instructions</title>
+    
+    
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fafafa;
+            line-height: 1.6;
+            color: #333;
+        }
+    
+        .container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+    
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+    
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+    
+        h2 {
+            margin-top: 50px;
+            font-size: 1.7rem;
+        }
+    
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-top: 25px;
+        }
+    
+        code {
+            background: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+    
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+    
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+    
+        table th {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+    
+        .endpoint {
+            font-size: 1.1rem;
+            background: #007bff;
+            color: white;
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+    
+        .badge {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+    
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    
+    </style>
+    
+</head>
+
+
+<body>
+    <div class="container">
+
+        <h1>CDBProm v2.0 — Local Predictions with Docker</h1>
+        <p>This is a tutorial to run predictions from our official Docker volume.<br>
+        There are no restrictions on the number of sequences that can be run</p>
+
+
+        <div class="section">
+            <h2>Parameters</h2>
+            <p>(Mandatory) <strong>input_file</strong>: Local path to te input file</p>
+            <p>(Optional)<strong>'--output_file', '-o'</strong>: Name of the output file</p>
+            <p>(Optional)<strong>'--step_size', '-s'</strong>: Value of the desired step size (used for sequences with length >60)</p>
+
+        </div>
+
+        <div class="section">
+            <p><strong>Pull the Docker image:</strong></p>
+            <pre>docker pull sganzg/clade_predictor:latest</pre>
+
+            <p><strong>Build the Docker image</strong></p>
+            <pre>docker build -t local_prediction_tool .</pre>
+
+            <p><strong>Run with results on screen (basic)</strong></p>
+            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta</pre>
+
+            <p><strong>Run saving results as a csv in the same directory of your input file</strong></p>
+            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta -o /data/results.csv</pre>
+
+            <p><strong>Run inputting the desired value of step size(for sequences with length > 60)</strong></p>
+            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta -o /data/results.csv -s 4</pre>
+        </div>
+    </div>
+
+    
+
+</body>
+
+{% endblock%}

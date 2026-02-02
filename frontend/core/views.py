@@ -99,7 +99,8 @@ def predict(request):
     return render(request, 'core/predict.html', {'form':form})
 
 
-
+def docker(request):
+    return render(request, 'core/docker.html')
 
 ###this will be only for showing the results on screen, it uses pagination
 class PromoterQueryView(APIView):

@@ -36,3 +36,7 @@ Thumbs.db
 
 #safe tensors
 *.safetensors
+
+
+#local prediction docker
+local_prediction/

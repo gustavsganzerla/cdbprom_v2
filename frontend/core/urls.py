@@ -13,6 +13,7 @@ urlpatterns = [
         path('api/query/', PromoterQueryView.as_view(), name='promoter-query'),
         path('api/download/', PromoterDownloadCSVView.as_view(), name='download-query'),
         path('api/downloadPredict', DownloadPredictView.as_view(), name='download_predict'),
+        path('docker/', views.docker, name='docker'),
         path('autocomplete_organism_name/', views.autocomplete_organism_name, name='autocomplete_organism_name'),
         path('organisms/', views.organisms, name='organisms'),
         path('predict/', views.predict, name='predict')

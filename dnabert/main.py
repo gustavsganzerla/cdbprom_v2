@@ -3,9 +3,13 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, Auto
 import torch
 import logging
 from flask_cors import CORS
+from functools import wraps
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+API_KEY = 'MY_KEY'
 
 def seq_to_kmers(seq, k=6):
     seq = seq.upper().replace("N", "")
@@ -33,9 +37,11 @@ def predict_sequence(seq):
     return probs.cpu().numpy()[0]
 
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:8000"])
 
+
+app = Flask(__name__)
+CORS(app, origins=["http://localhost:8000"],
+     allow_headers=["Content-Type", "X-API-KEY"])
 
 model_dir = 'ft_model_files'
 
@@ -47,9 +53,21 @@ model.to(device)
 model.eval()
 
 
+def limit_to_key(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_provided_key = request.headers.get('X-API-KEY')
+        
+        if not user_provided_key or user_provided_key != API_KEY:
+            return jsonify({"error": "Invalid or missing API key"}), 401
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 ###API endpoint
 @app.route("/predict", methods=["POST"])
 @app.route("/predict/", methods=["POST"])
+@limit_to_key
 def predict():
     data = request.get_json()
     sequences = data['sequences']

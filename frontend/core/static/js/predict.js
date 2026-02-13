@@ -19,7 +19,8 @@ document.getElementById("new-form").addEventListener("submit", async function(e)
     try {
         const response = await fetch(CONFIG.API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", 
+                        "X-API-KEY":"MY_KEY"},
             body: JSON.stringify({ sequences })
         });
 

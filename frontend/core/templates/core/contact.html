@@ -3,7 +3,22 @@
 {% block title %}Contact{% endblock %}
 {% block content%}
 
-<h1>Contact</h1>
+<h1>Reach out to us!</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-block">
+        {{form.subject.label_tag}}{{form.subject}}
+        {{form.email.label_tag}}{{form.email}}
+        {{form.message.label_tag}}{{form.message}}
+        <br>
+        
+        <button type="submit" class="btn">Send</button>
+    </div>
+</form>
+
+
 
 
 {%endblock%}

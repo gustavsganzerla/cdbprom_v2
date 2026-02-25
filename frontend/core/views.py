@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from . forms import QueryForm, InputForm
+from . forms import QueryForm, InputForm, ContactForm
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +14,9 @@ import logging
 import requests
 from urllib.parse import unquote_plus
 import math
+
+from django.core.mail import EmailMessage, get_connection
+from django.conf import settings
 
 # Create your views here.
 
@@ -65,7 +68,40 @@ def resources_api_prediction(request):
     return render(request, 'core/resources_api_prediction.html')
 
 def contact(request):
-    return render(request, 'core/contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        print(form)
+
+        if form.is_valid():
+            collected_data = form.cleaned_data
+            subject = collected_data.get('subject')
+            email = collected_data.get('email')
+            message = collected_data.get('message')
+
+            with get_connection(
+                host = settings.EMAIL_HOST,
+                port = settings.EMAIL_PORT,
+                username = settings.EMAIL_HOST_USER,
+                password = settings.EMAIL_HOST_PASSWORD,
+                use_ssl = settings.EMAIL_USE_SSL
+            ) as connection:
+                subject = f'CDBProm_{subject}'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = ['eusebio.sganzerla@gmail.com']
+                message = f'{message}\n{email}'
+
+                email = EmailMessage(subject, message, email_from, recipient_list)
+                email.send()
+
+                return render(request, 'core/contact_success.html')
+
+
+
+
+    
+    else:
+        form = ContactForm()
+    return render(request, 'core/contact.html', {'form':form})
 
 def about(request):
     return render(request, 'core/about.html')

@@ -70,7 +70,6 @@ def resources_api_prediction(request):
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
-        print(form)
 
         if form.is_valid():
             collected_data = form.cleaned_data

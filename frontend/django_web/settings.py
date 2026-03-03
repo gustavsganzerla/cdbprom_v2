@@ -40,6 +40,15 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '132.247.46.104']
 
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://cdbprom2-iimas.unam.mx',
+]
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 # Application definition
 
 INSTALLED_APPS = [

@@ -118,7 +118,7 @@
 
         <h1>CDBProm v2.0 — Local Predictions with Docker</h1>
         <p>This is a tutorial to run predictions from our official Docker volume.<br>
-        There are no restrictions on the number of sequences that can be run</p>
+        There are no restrictions on the number of sequences that can be run.</p>
 
 
         <div class="section">
@@ -130,20 +130,25 @@
         </div>
 
         <div class="section">
-            <p><strong>Pull the Docker image:</strong></p>
-            <pre>docker pull sganzg/clade_predictor:latest</pre>
-
-            <p><strong>Build the Docker image</strong></p>
-            <pre>docker build -t local_prediction_tool .</pre>
-
-            <p><strong>Run with results on screen (basic)</strong></p>
-            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta</pre>
+            <p><strong>Run with results on terminal (basic)</strong></p>
+            <pre>docker run --rm -v \
+                /path/to/your/fasta:/data \
+                sganzg/local_prediction_tool \
+                /data/your_fasta.fasta</pre>
 
             <p><strong>Run saving results as a csv in the same directory of your input file</strong></p>
-            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta -o /data/results.csv</pre>
+            <pre>docker run --rm -v \
+                /path/to/your/fasta:/data \
+                sganzg/local_prediction_tool \ 
+                /data/your_fasta.fasta \ 
+                -o /data/output.csv</pre>
 
-            <p><strong>Run inputting the desired value of step size(for sequences with length > 60)</strong></p>
-            <pre>docker run --rm -v /path/to/your/fasta:data local_prediction_tool /data/your_fasta.fasta -o /data/results.csv -s 4</pre>
+            <p><strong>Run inputting the desired value of step size (eg 5) for sequences with length > 60</strong></p>
+            <pre>docker run --rm -v \
+                /path/to/your/fasta:/data \
+                sganzg/local_prediction_tool \
+                /data/your_fasta.fasta \ 
+                -o /data/output.csv -s 5</pre>
         </div>
     </div>
 

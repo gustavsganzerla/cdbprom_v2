@@ -23,14 +23,6 @@ ARG DJANGO_ENV=dev
 ENV DJANGO_ENV=${DJANGO_ENV}
 
 
-CMD if [ "$DJANGO_ENV" = "prod" ]; then \
-        exec gunicorn django_web.wsgi:application \
-        --bind 0.0.0.0:8000 \
-        --workers 3 \
-        --timeout 120 \
-        --access-logfile - \
-        --error-logfile - ; \
-    else \
-        exec python manage.py runserver 0.0.0.0:8000 ; \
-    fi
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 

@@ -37,7 +37,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '132.247.46.104']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '132.247.46.104', 'cdbprom2-iimas.unam.mx']
 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

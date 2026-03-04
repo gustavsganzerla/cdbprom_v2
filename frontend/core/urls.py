@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
 from .views import PromoterQueryView, PromoterDownloadCSVView, DownloadPredictView 
+from drf_spectacular.views import (
+    SpectacularAPIView, 
+    SpectacularRedocView, 
+    SpectacularSwaggerView
+)
 
 urlpatterns = [
         path('home/', views.home, name='home'),
@@ -16,5 +21,7 @@ urlpatterns = [
         path('docker/', views.docker, name='docker'),
         path('autocomplete_organism_name/', views.autocomplete_organism_name, name='autocomplete_organism_name'),
         path('organisms/', views.organisms, name='organisms'),
-        path('predict/', views.predict, name='predict')
+        path('predict/', views.predict, name='predict'),
+        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui')
 ]

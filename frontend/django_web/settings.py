@@ -52,6 +52,7 @@ CSRF_COOKIE_SECURE = True
 # Application definition
 
 INSTALLED_APPS = [
+    'drf_spectacular',
     'rest_framework',
     'core',
     'django.contrib.admin',
@@ -177,4 +178,17 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+REST_FRAMEWORK = {
+    # This tells DRF to use drf-spectacular for its introspection
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Optional: Add metadata for your documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'My Platform API',
+    'DESCRIPTION': 'Documentation for our web platform endpoints',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False
 }

@@ -18,6 +18,10 @@ import math
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 
+from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiParameter
+from rest_framework import serializers
+from drf_spectacular.types import OpenApiTypes
+
 # Create your views here.
 
 logger = logging.getLogger(__name__)
@@ -128,6 +132,8 @@ def organisms(request):
     return render(request, 'core/organisms.html', {'organisms': organisms,
                                                    'kingdoms':kingdoms})
 
+
+
 def predict(request):
     output = []
     form = InputForm()
@@ -139,6 +145,19 @@ def docker(request):
 
 ###this will be only for showing the results on screen, it uses pagination
 class PromoterQueryView(APIView):
+    @extend_schema(
+        summary="Search Organisms in PostgreSQL",
+        description="Filters the database based on organism details, NCBI IDs, and protein families.",
+        parameters=[
+            OpenApiParameter(name='organism_name', description='Filter by name (e.g., E. coli)', required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name='annotation', description='Filter by genomic annotation', required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name='ncbi_id', description='Filter by NCBI Taxonomic ID', required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name='family', description='Filter by protein or organism family', required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name='organism_id', description='Filter by internal database ID', required=False, type=OpenApiTypes.INT),
+        ],
+        responses={200: PromoterModelSerializer(many=True)}, 
+        tags=['Database Queries']
+    )
     def get(self, request):
         query = Q()
 

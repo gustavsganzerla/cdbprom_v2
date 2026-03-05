@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
 
 # Optional: Add metadata for your documentation
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'My Platform API',
+    'TITLE': 'CDBProm v2.0 APIs',
     'DESCRIPTION': 'Documentation for our web platform endpoints',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False

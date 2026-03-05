@@ -215,6 +215,7 @@ class PromoterQueryView(APIView):
 
 
 class PromoterDownloadCSVView(APIView):
+    @extend_schema(exclude=True)##this is to remove the API from swagger, it will get all APIViews as its exhaustive
     def get(self, request):
         query = Q()
 
@@ -267,6 +268,7 @@ class PromoterDownloadCSVView(APIView):
    
 
 class DownloadPredictView(APIView):
+    @extend_schema(exclude=True)
     def post(self, request):
         data = request.data.get("data", [])
 

@@ -51,18 +51,20 @@ class Command(BaseCommand):
                             print(f"assembly id: {organism_instance}")
                             print(f"sequence: {values[8]} ({len(values[8])})")
                             print(f"annotation: {values[9]} ({len(values[9])})")
+
+                            if values[9]:
                             
-                            obj = PromoterModel(
-                                organism_name = name,
-                                ncbi_id = values[0],
-                                start_position = int(values[3]),
-                                end_position = int(values[4]),
-                                prediction_score = float(values[6]),
-                                sequence = values[8],
-                                annotation = values[9],
-                                assembly_annotation = organism_instance
-                            )
-                            obj.save()
+                                obj = PromoterModel(
+                                    organism_name = name,
+                                    ncbi_id = values[0],
+                                    start_position = int(values[3]),
+                                    end_position = int(values[4]),
+                                    prediction_score = float(values[6]),
+                                    sequence = values[8],
+                                    annotation = values[9],
+                                    assembly_annotation = organism_instance
+                                )
+                                obj.save()
         self.stdout.write(self.style.SUCCESS("All files imported successfully"))
 
                             

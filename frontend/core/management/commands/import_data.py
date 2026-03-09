@@ -42,15 +42,18 @@ class Command(BaseCommand):
                         match = re.search(pattern, file.name)
                         if match:
                             assembly_id = match.group()
-                            organism_instance = organism_cache[assembly_id]
+                            if assembly_id in organism_cache:
+                                organism_instance = organism_cache[assembly_id]
+                            
+
                         else:
                             assembly_id = "NA"
 
-                        if len(values)>3:
-                            print(f"organism_name: {name} ({len(name)})")
-                            print(f"assembly id: {organism_instance}")
-                            print(f"sequence: {values[8]} ({len(values[8])})")
-                            print(f"annotation: {values[9]} ({len(values[9])})")
+                        if len(values)>3 and assembly_id != "NA":
+                            # print(f"organism_name: {name} ({len(name)})")
+                            # print(f"assembly id: {organism_instance}")
+                            # print(f"sequence: {values[8]} ({len(values[8])})")
+                            # print(f"annotation: {values[9]} ({len(values[9])})")
 
                             if '<NA>' not in values:
                             

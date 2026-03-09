@@ -29,7 +29,31 @@ from django.core.cache import cache
 logger = logging.getLogger(__name__)
 
 def home(request):
-    return render(request, 'core/home.html')
+    promoters = cache.get('promoters')
+    kingdoms = cache.get('kingdoms')
+    species = cache.get('species')
+    
+    if promoters is None:
+        promoters = PromoterModel.objects.count()
+        cache.set('promoters', promoters, 86400)
+
+    if kingdoms is None:
+        kingdoms = (PromoterModel.objects
+            .values('assembly_annotation__kingdom')
+            .distinct()
+            .count()
+        )
+        cache.set('kingdoms', kingdoms, 86400)
+    if species is None:
+        species = (
+            PromoterModel.objects
+            .values('organism_name')
+            .distinct()
+            .count()
+        )
+        cache.set('species', species, 86400)
+
+    return render(request, 'core/home.html', {"promoters": promoters, "kingdoms":kingdoms, "species":species})
 
 
 def query(request):
@@ -104,7 +128,7 @@ def organisms(request):
             .annotate(count=Count('id'))   
             .order_by('organism_name')
         )
-        cache.set('organisms_list', organisms, 3600)
+        cache.set('organisms_list', organisms, 86400)
 
     if kingdoms is None:
         kingdoms=list(
@@ -112,7 +136,7 @@ def organisms(request):
             .values('assembly_annotation__kingdom')
             .annotate(unique_organisms=Count('assembly_annotation__organism_name', distinct=True))
         )
-        cache.set('kingdoms_list', kingdoms, 3600)
+        cache.set('kingdoms_list', kingdoms, 86400)
 
 
     return render(request, 'core/organisms.html', {'organisms': organisms,

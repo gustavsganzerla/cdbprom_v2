@@ -52,7 +52,7 @@ class Command(BaseCommand):
                             print(f"sequence: {values[8]} ({len(values[8])})")
                             print(f"annotation: {values[9]} ({len(values[9])})")
 
-                            if values[9]:
+                            if '<NA>' not in values:
                             
                                 obj = PromoterModel(
                                     organism_name = name,

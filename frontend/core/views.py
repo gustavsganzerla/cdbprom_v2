@@ -22,30 +22,14 @@ from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiParam
 from rest_framework import serializers
 from drf_spectacular.types import OpenApiTypes
 
+from django.core.cache import cache
+
 # Create your views here.
 
 logger = logging.getLogger(__name__)
 
 def home(request):
-    all_data = PromoterModel.objects.values('organism_name')
-
-    unique_organisms = len({d['organism_name'] for d in all_data})
-    n_promoters = len(all_data)
-
-
-
-    list_unique_kingdoms = []
-    all_data_kingdoms = PromoterModel.objects.values('assembly_annotation__kingdom')
-    for family in all_data_kingdoms:
-        if family['assembly_annotation__kingdom'] not in list_unique_kingdoms:
-            list_unique_kingdoms.append(family['assembly_annotation__kingdom'])
-
-
-
-    
-    return render(request, 'core/home.html', {'unique_organisms':unique_organisms,
-                                              'n_promoters':n_promoters,
-                                              'kingdoms':len(list_unique_kingdoms)})
+    return render(request, 'core/home.html')
 
 
 def query(request):
@@ -110,24 +94,26 @@ def about(request):
     return render(request, 'core/about.html')
 
 def organisms(request):
-    organisms = (
-        PromoterModel.objects
-        .values('organism_name')      
-        .annotate(count=Count('id'))   
-        .order_by('organism_name')  
-    )
+    organisms = cache.get('organisms_list')
+    kingdoms = cache.get('kingdoms_list')
 
-    kingdoms = (
-        PromoterModel.objects
-        .values('assembly_annotation__kingdom')
-        .annotate(unique_organisms=Count('assembly_annotation__organism_name', distinct=True))
-    )
-    print(kingdoms)
+    if organisms is None:
+        organisms=list(
+            PromoterModel.objects
+            .values('organism_name')
+            .annotate(count=Count('id'))   
+            .order_by('organism_name')
+        )
+        cache.set('organisms_list', organisms, 3600)
 
-    
+    if kingdoms is None:
+        kingdoms=list(
+             PromoterModel.objects
+            .values('assembly_annotation__kingdom')
+            .annotate(unique_organisms=Count('assembly_annotation__organism_name', distinct=True))
+        )
+        cache.set('kingdoms_list', kingdoms, 3600)
 
-
-        
 
     return render(request, 'core/organisms.html', {'organisms': organisms,
                                                    'kingdoms':kingdoms})

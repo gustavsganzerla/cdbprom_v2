@@ -6,7 +6,7 @@ from django.db import models
 
 class Organism(models.Model):
     assembly_annotation = models.CharField(max_length=100)
-    kingdom = models.CharField(max_length=100)
+    kingdom = models.CharField(max_length=100, db_index=True)
     taxid = models.CharField(max_length=100)
     species_taxid = models.CharField(max_length=100)
     organism_name = models.CharField(max_length=100)
@@ -18,7 +18,7 @@ class Organism(models.Model):
     
 
 class PromoterModel(models.Model):
-    organism_name = models.CharField(max_length=100)
+    organism_name = models.CharField(max_length=100, db_index=True)
     ncbi_id = models.CharField(max_length=50)
     start_position = models.IntegerField()
     end_position = models.IntegerField()

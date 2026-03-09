@@ -98,6 +98,7 @@ function fetchData(page = 1, organismOverride = null) {
     currentOrganismOverride === null
     ? (organismField ? encodeURIComponent(organismField.value) : '')
     : '';
+    
 
   const organismId =
     currentOrganismOverride !== null

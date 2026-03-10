@@ -9,7 +9,7 @@ class QueryForm(forms.Form):
 class InputForm(forms.Form):
     sequence_text = forms.CharField(widget=forms.Textarea(attrs={"rows":10,
                                                                "cols":60,
-                                                               "placeholder": "Promoter sequences in FASTA format"}),
+                                                               "placeholder": ">BG260_RS00135\nCATTGCTTTCTTATTATGGGTTGAAGTAAAAAAATTATCGATTAAAGAGATCCACATTCT"}),
     required=False)
 
     uploaded_file = forms.FileField(required=False)

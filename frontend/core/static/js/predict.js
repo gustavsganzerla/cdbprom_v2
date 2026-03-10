@@ -16,68 +16,19 @@ document.getElementById("new-form").addEventListener("submit", async function(e)
     console.log("Sending to Flask API:", sequences);
     console.log(CONFIG.API_URL);
 
-    try {
-        const response = await fetch(CONFIG.API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", 
-                        "X-API-KEY":"MY_KEY"},
-            body: JSON.stringify({ sequences })
-        });
-
-        // Ensure response exists
-        if (!response) {
-            console.error("No response from Flask API");
-            return;
-        }
-
-        // Check HTTP status first
-        if (!response.ok) {
-            console.error("HTTP error", response.status, response.statusText);
-            // Try to get text safely
-            const text = await response.text().catch(() => "<no response text>");
-            console.error("Server response:", text);
-            return;
-        }
-
-        // At this point, we expect JSON
-        const data = await response.json().catch(() => null);
-
-        if (data && data.output && data.output.length > 0) {
-            console.log("Flask API response:", data);
-
-            //download 
-            const downloadContainer = document.getElementById('download-container');
-            downloadContainer.innerHTML = "";
-
-            const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.textContent = 'Download';
-
-            btn.addEventListener('click', () => downloadPrediction(data.output));
-
-            downloadContainer.appendChild(btn);
-
-            
-            // Build table
-            const columnOrder = ["id", "Predicted class", "Probability promoter", "Probability non-promoter", "Coordinates", "Sequence", "Message"]
-            buildTable("results-container", data.output, columnOrder);
-            // Show results block
-            document.getElementById("results-container").style.display = "block";
-
-            
-            
-        } else {
-            console.error("No results or failed to parse JSON response");
-            
-            // Hide results block if no data
-            document.getElementById("results-container").style.display = "none";
-        }
-
-    } catch (error) {
-        console.error("Error sending data to Flask API:", error);
-    }
+    sendSequences(sequences);
 });
 
+document.getElementById("run-demo").addEventListener("click", function(e){
+    e.preventDefault();
+    const demoFasta = `
+    >BG260_RS00135\n
+    CATTGCTTTCTTATTATGGGTTGAAGTAAAAAAATTATCGATTAAAGAGATCCACATTCT
+    `;
+    const sequences = parseFasta(demoFasta);
+    sendSequences(sequences);
+    
+})
 
 //FASTA parser
 function parseFasta(fastaText) {
@@ -177,4 +128,71 @@ async function downloadPrediction(data){
 
     //cleanup
     a.remove();
+}
+
+async function sendSequences(sequences){
+
+    console.log("Sending to Flask API:", sequences);
+    console.log(CONFIG.API_URL);
+
+    try {
+        const response = await fetch(CONFIG.API_URL, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "X-API-KEY": "MY_KEY"
+            },
+            body: JSON.stringify({ sequences })
+        });
+
+        if (!response) {
+            console.error("No response from Flask API");
+            return;
+        }
+
+        if (!response.ok) {
+            console.error("HTTP error", response.status, response.statusText);
+            const text = await response.text().catch(() => "<no response text>");
+            console.error("Server response:", text);
+            return;
+        }
+
+        const data = await response.json().catch(() => null);
+
+        if (data && data.output && data.output.length > 0) {
+
+            console.log("Flask API response:", data);
+
+            const downloadContainer = document.getElementById('download-container');
+            downloadContainer.innerHTML = "";
+
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.textContent = 'Download';
+
+            btn.addEventListener('click', () => downloadPrediction(data.output));
+            downloadContainer.appendChild(btn);
+
+            const columnOrder = [
+                "id",
+                "Predicted class",
+                "Probability promoter",
+                "Probability non-promoter",
+                "Coordinates",
+                "Sequence",
+                "Message"
+            ];
+
+            buildTable("results-container", data.output, columnOrder);
+
+            document.getElementById("results-container").style.display = "block";
+
+        } else {
+            console.error("No results or failed to parse JSON response");
+            document.getElementById("results-container").style.display = "none";
+        }
+
+    } catch (error) {
+        console.error("Error sending data to Flask API:", error);
+    }
 }

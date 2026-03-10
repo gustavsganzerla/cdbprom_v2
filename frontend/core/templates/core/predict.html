@@ -3,6 +3,20 @@
 {% block title %}Predict{% endblock %}
 
 {% block content %}
+
+
+<style>
+    .form-buttons{
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .form-buttons button{
+        flex: 1;
+    }
+</style>
+
 <h1>Predict</h1>
 
 <div class='form-block'>
@@ -13,8 +27,11 @@
             <label for="{{ field.id_for_label }}">
             {{ field }}
         {% endfor %}
-        <button type="submit">Submit</button>
-        <button type="button" id="reset-form">Reset</button>
+        <div class="form-buttons">
+            <button type="button" id="reset-form">Reset</button>
+            <button type="button" id="run-demo" class="btn">Run Demo</button>
+            <button type="submit">Submit</button>
+        </div>
     </form>
 </div>
 

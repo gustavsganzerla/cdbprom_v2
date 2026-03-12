@@ -189,10 +189,16 @@ class PromoterQueryView(APIView):
             query &= Q(ncbi_id__icontains=ncbi_id)
         if organism_id:
             query &= Q(assembly_annotation_id=organism_id)
-            
+
+        ###build the paginator
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
         
+
+        #####FAMILY LEVEL
         if family and not organism_id:
-            organisms =(
+
+            organisms = (
                 Organism.objects
                 .filter(kingdom=family)
                 .annotate(sequence_count=Count("promotermodel"))
@@ -201,27 +207,25 @@ class PromoterQueryView(APIView):
                 .values("id", "organism_name", "sequence_count")
             )
 
-            return Response({
-                "level":"family",
-                "family":family,
-                "results":list(organisms),
-                "count":len(list(organisms))
-            })
+            page = paginator.paginate_queryset(organisms, request)
 
-        ###here, the sql query is prepared
-        queryset = PromoterModel.objects.filter(query)
+            response = paginator.get_paginated_response(page)
+
+            # metadata for the JS to know it should render the organism table
+            response.data["level"] = "family"
+            response.data["family"] = family
+
+            return response
         
-        ###here is when the query is executed
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
+        ######PROMOTER LEVEL
+        queryset = PromoterModel.objects.filter(query)
+
         page = paginator.paginate_queryset(queryset, request)
 
-        ###here the queryset is converted to a python dictionary
         serializer = PromoterModelSerializer(page, many=True)
-        
 
-        ###here, the data (ready) is sent to the frontend via http
         return paginator.get_paginated_response(serializer.data)
+
 
 
 class PromoterDownloadCSVView(APIView):

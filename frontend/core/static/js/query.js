@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       currentOrganismOverride = null;
+      currentFamilyOverride = null;
       fetchData(1);
     });
   }
@@ -45,7 +46,7 @@ function renderPaginationControls(totalPages, currentPage) {
     const btn = document.createElement('button');
     btn.textContent = label;
     btn.disabled = disabled;
-    btn.onclick = () => fetchData(page);
+    btn.onclick = () => fetchData(page, currentOrganismOverride);
     return btn;
   };
 
@@ -180,7 +181,7 @@ function fetchData(page = 1, organismOverride = null) {
               <th>Organism Name</th>
               <th>Number of Promoters</th>
               <th>Actions</th>
-            <tr>
+            </tr>
           `;
           tbody.innerHTML = data.results.map(item => `
             <tr>
@@ -192,6 +193,7 @@ function fetchData(page = 1, organismOverride = null) {
             </tr>
           `).join('')
         }
+        
         else{
         console.log(params.toString());
 
@@ -270,7 +272,12 @@ function fetchData(page = 1, organismOverride = null) {
 
       //pagination
       const totalPages = Math.ceil(data.count / 10);
-      renderPaginationControls(totalPages, page);
+      if (totalPages > 1) {
+        renderPaginationControls(totalPages, page);
+      } else {
+        const container = document.getElementById('pagination');
+        if (container) container.innerHTML = '';
+        }
     })
     .catch(err => {
       console.error(err);

@@ -23,6 +23,8 @@ from rest_framework import serializers
 from drf_spectacular.types import OpenApiTypes
 
 from django.core.cache import cache
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 
@@ -138,9 +140,35 @@ def organisms(request):
         )
         cache.set('kingdoms_list', kingdoms, 86400)
 
+    
+    if kingdoms is None:
+        kingdoms = []
 
-    return render(request, 'core/organisms.html', {'organisms': organisms,
-                                                   'kingdoms':kingdoms})
+    # -------- Pagination --------
+    paginator = Paginator(kingdoms, 10)  # 10 rows per page
+    page_number = request.GET.get("page", 1)
+
+    try:
+        page_number = int(page_number)
+    except (TypeError, ValueError):
+        page_number = 1
+
+    # Ensure page_number is within valid range
+    if page_number < 1:
+        page_number = 1
+    elif page_number > paginator.num_pages:
+        page_number = paginator.num_pages if paginator.num_pages > 0 else 1
+
+    kingdoms_page = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "core/organisms.html",
+        {
+            "organisms": organisms,
+            "kingdoms": kingdoms_page
+        }
+    )
 
 
 

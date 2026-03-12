@@ -28,6 +28,25 @@
         {% endfor %}
       </tbody>
     </table>
+    <div class="pagination" style="margin-top:15px;">
+      {% if kingdoms.has_previous %}
+        <a href="?page=1"><button class="btn">First</button></a>
+        <a href="?page={{ kingdoms.previous_page_number }}"><button class="btn">Prev</button></a>
+      {% else %}
+        <button class="btn" disabled>First</button>
+        <button class="btn" disabled>Prev</button>
+      {% endif %}
+    
+      <button class="btn" disabled>Page {{ kingdoms.number }} / {{ kingdoms.paginator.num_pages }}</button>
+    
+      {% if kingdoms.has_next %}
+        <a href="?page={{ kingdoms.next_page_number }}"><button class="btn">Next</button></a>
+        <a href="?page={{ kingdoms.paginator.num_pages }}"><button class="btn">Last</button></a>
+      {% else %}
+        <button class="btn" disabled>Next</button>
+        <button class="btn" disabled>Last</button>
+      {% endif %}
+    </div>
   </div>
 </div>
 

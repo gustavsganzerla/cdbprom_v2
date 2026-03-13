@@ -18,14 +18,20 @@ import math
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 
-from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiParameter
+from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiParameter, OpenApiExample
 from rest_framework import serializers
 from drf_spectacular.types import OpenApiTypes
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
 
+from rest_framework import status
+import os
+from dotenv import load_dotenv
 
+
+
+load_dotenv()
 # Create your views here.
 
 logger = logging.getLogger(__name__)
@@ -330,6 +336,54 @@ class DownloadPredictView(APIView):
             writer.writerow([row.get(col, "") for col in column_order])
         
         return response
+
+
+class SequencyProxyView(APIView):
+    @extend_schema(
+    summary="Send sequences for prediction",
+    description="Sends sequences to the DNABERT framework. Each sequence must have an explicit 'id' and 'seq' field.",
+    request=inline_serializer(
+        name='SequenceRequest',
+        fields={
+            'sequences': serializers.ListField(
+                child=inline_serializer(
+                    name='SequenceItem',
+                    fields={
+                        'id': serializers.CharField(help_text="Sequence identifier"),
+                        'seq': serializers.CharField(help_text="Nucleotide sequence (ATCG)")
+                    }
+                ),
+                help_text="List of sequence objects"
+            )
+        }
+    ),
+    responses={200: serializers.DictField()},
+    tags=['Prediction']
+    )
+    def post(self, request, *args, **kwargs):
+        ####external flask API details
+        flask_url = os.environ.get("PREDICTION_API_URL")
+        api_key = os.environ.get("API_KEY")
+
+        sequences = request.data.get('sequences')
+        
+        
+        if not sequences:
+            return Response({"error": "No sequences provided"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            response = requests.post(
+                flask_url,
+                json={"sequences":sequences},
+                headers={"X-API-KEY":api_key},
+                timeout=60
+            )
+            response.raise_for_status()
+            return Response(response.json(), status=status.HTTP_200_OK)
+        except requests.exceptions.RequestException as e:
+            return Response(
+                {"error":f'API connection failed: {str(e)}'},
+                status=status.HTTP_502_BAD_GATEWAY
+            )
 
 
 def autocomplete_organism_name(request):

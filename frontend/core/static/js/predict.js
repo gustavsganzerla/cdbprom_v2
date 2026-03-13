@@ -26,7 +26,7 @@ document.getElementById("run-demo").addEventListener("click", function(e){
     CATTGCTTTCTTATTATGGGTTGAAGTAAAAAAATTATCGATTAAAGAGATCCACATTCT
     `;
     const sequences = parseFasta(demoFasta);
-    sendSequences(sequences);
+    sendSequencesAPI(sequences);
     
 })
 
@@ -195,4 +195,73 @@ async function sendSequences(sequences){
     } catch (error) {
         console.error("Error sending data to Flask API:", error);
     }
+}
+
+
+async function sendSequencesAPI(sequences){
+    const DJANGO_ENDPOINT = "/api/predict-sequences/";
+
+    try {
+        const response = await fetch(DJANGO_ENDPOINT, {
+            method:"POST",
+            headers: {
+                "Content-Type":"application/json",
+                "X-CSRFToken":getCookie('csrftoken')
+            },
+            body:JSON.stringify({sequences})
+        });
+        if(!response.ok){
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data && data.output && data.output.length > 0) {
+
+            console.log("Flask API response:", data);
+
+            const downloadContainer = document.getElementById('download-container');
+            downloadContainer.innerHTML = "";
+
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.textContent = 'Download';
+
+            btn.addEventListener('click', () => downloadPrediction(data.output));
+            downloadContainer.appendChild(btn);
+
+            const columnOrder = [
+                "id",
+                "Predicted class",
+                "Probability promoter",
+                "Probability non-promoter",
+                "Coordinates",
+                "Sequence",
+                "Message"
+            ];
+
+            buildTable("results-container", data.output, columnOrder);
+
+            document.getElementById("results-container").style.display = "block";
+        } 
+        
+    }catch (error) {
+        console.error("Error communicating with Django: ", error);
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

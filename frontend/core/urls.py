@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import PromoterQueryView, PromoterDownloadCSVView, DownloadPredictView 
+from .views import PromoterQueryView, PromoterDownloadCSVView, DownloadPredictView, SequencyProxyView
 from drf_spectacular.views import (
     SpectacularAPIView, 
     SpectacularRedocView, 
@@ -23,5 +23,6 @@ urlpatterns = [
         path('organisms/', views.organisms, name='organisms'),
         path('predict/', views.predict, name='predict'),
         path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-        path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui')
+        path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+        path('api/predict-sequences/', SequencyProxyView.as_view(), name='predict_sequences')
 ]

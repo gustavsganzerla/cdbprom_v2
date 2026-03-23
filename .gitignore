@@ -39,4 +39,6 @@ Thumbs.db
 
 
 #local prediction docker
-local_prediction/frontend/django_web/settings.py
+local_prediction/
+
+frontend/django_web/settings.py

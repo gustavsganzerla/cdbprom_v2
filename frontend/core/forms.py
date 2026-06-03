@@ -1,4 +1,5 @@
 from django import forms
+from django_recaptcha.fields import ReCaptchaField
 
 
 class QueryForm(forms.Form):
@@ -23,3 +24,5 @@ class ContactForm(forms.Form):
         "cols":40,
         "placeholder":"Type your message here",}),
         required=True)
+    
+    captcha = ReCaptchaField()

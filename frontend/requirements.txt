@@ -6,3 +6,4 @@ django-cors-headers
 Bio
 drf-spectacular
 dotenv
+django_recaptcha

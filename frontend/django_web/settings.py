@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework',
     'core',
+    'django_recaptcha',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -181,14 +182,19 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    # This tells DRF to use drf-spectacular for its introspection
+    #rhis tells DRF to use drf-spectacular for its introspection
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Optional: Add metadata for your documentation
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'CDBProm v2.0 APIs',
     'DESCRIPTION': 'Documentation for our web platform endpoints',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False
 }
+
+
+###rechaptcha
+RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
